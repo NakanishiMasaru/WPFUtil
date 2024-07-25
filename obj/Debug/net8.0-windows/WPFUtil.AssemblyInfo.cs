@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WPFUtil")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9cbe72e90e7972ee23d090bd6eab42917f00d8e4")]
 [assembly: System.Reflection.AssemblyProductAttribute("WPFUtil")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WPFUtil")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

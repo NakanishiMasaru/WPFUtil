@@ -1,11 +1,19 @@
-﻿using static WPFUtil.MainWindow;
-
-namespace WPFUtil.src.ReTasks
+﻿namespace WPFUtil.src.ReTasks
 {
+
+
+    public interface IDataMember
+    {
+        Task syncFields(CancellationToken ct);
+
+        Task commitFields(CancellationToken ct);
+
+        void restore();
+    }
 
     public class AssetEditor
     {
-        public static Task<EditHandle<T>> Open<T>(T resource, CancellationToken ct) where T : IDataMember
+        public static Task<EditHandle<T>> open<T>(T resource, CancellationToken ct) where T : IDataMember
         {
             return Task.FromResult(new EditHandle<T>(resource));
         }
@@ -13,7 +21,7 @@ namespace WPFUtil.src.ReTasks
 
     public class AssetReader
     {
-        public static Task<ReadHandle<T>> Open<T>(T resource, CancellationToken ct) where T : IDataMember
+        public static Task<ReadHandle<T>> open<T>(T resource, CancellationToken ct) where T : IDataMember
         {
             return Task.FromResult(new ReadHandle<T>(resource));
         }
@@ -21,56 +29,56 @@ namespace WPFUtil.src.ReTasks
 
     public class EditHandle<T>(T resource) : IDisposable where T : IDataMember
     {
-        private bool _isDisposed;
-        private T? _temp;
+        private bool _IsDisposed;
+        private T? _Temp;
 
-        public async Task<T> Current(CancellationToken ct)
+        public async Task<T> current(CancellationToken ct)
         {
-            ObjectDisposedException.ThrowIf(_isDisposed, this);
+            ObjectDisposedException.ThrowIf(_IsDisposed, this);
 
-            await resource.SyncFields(ct);
+            await resource.syncFields(ct);
 
-            _temp = resource;
+            _Temp = resource;
 
-            return _temp;
+            return _Temp;
         }
 
-        public async Task Commit(CancellationToken ct)
+        public async Task commit(CancellationToken ct)
         {
-            ObjectDisposedException.ThrowIf(_isDisposed, this);
-            await resource.CommitFields(ct);
+            ObjectDisposedException.ThrowIf(_IsDisposed, this);
+            await resource.commitFields(ct);
         }
 
-        public void Restore()
+        public void restore()
         {
-            ObjectDisposedException.ThrowIf(_isDisposed, this);
-            resource.Restore();
+            ObjectDisposedException.ThrowIf(_IsDisposed, this);
+            resource.restore();
 
-            _temp = default;
+            _Temp = default;
         }
 
         public void Dispose()
         {
-            Restore();
-            _isDisposed = true;
+            restore();
+            _IsDisposed = true;
         }
     }
 
     public class ReadHandle<T>(T resource) : IDisposable where T : IDataMember
     {
 
-        private bool _isDisposed;
+        private bool _IsDisposed;
 
-        public async Task<T> Current(CancellationToken ct)
+        public async Task<T> current(CancellationToken ct)
         {
-            ObjectDisposedException.ThrowIf(_isDisposed, this);
+            ObjectDisposedException.ThrowIf(_IsDisposed, this);
 
-            await resource.SyncFields(ct);
+            await resource.syncFields(ct);
 
             return resource;
         }
 
-        public void Commit(CancellationToken ct)
+        public void commit(CancellationToken ct)
         {
             throw new InvalidOperationException("Cannot commit changes in read-only mode.");
         }
@@ -78,7 +86,7 @@ namespace WPFUtil.src.ReTasks
         public void Dispose()
         {
             // No specific action needed for read-only handle
-            _isDisposed = true;
+            _IsDisposed = true;
         }
     }
 

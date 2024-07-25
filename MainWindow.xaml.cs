@@ -12,7 +12,7 @@ namespace WPFUtil
         public MainWindow()
         {
             InitializeComponent();
-            ReTaskExtension.SetMainThreadContext();
+            ReTaskExtension.setMainThreadContext();
         }
 
         protected override void OnContentRendered(EventArgs e)
@@ -37,7 +37,7 @@ namespace WPFUtil
 
                 task.Wait();//エラー
 
-                ct.Check();
+                ct.check();
             });
 
             thread.SetApartmentState(ApartmentState.STA); // Ensure the thread is STA for UI operations
@@ -57,21 +57,21 @@ namespace WPFUtil
             var ct = cts.Token;
 
             var resource = new TESTClass { DataA = "Original Data" };
-            using EditHandle<TESTClass> editHandle = await AssetEditor.Open(resource, ct);
+            using EditHandle<TESTClass> editHandle = await AssetEditor.open(resource, ct);
 
             try
             {
                 //現在状態を取得
-                var currentData = await editHandle.Current(ct);
+                var currentData = await editHandle.current(ct);
 
                 currentData.DataA = "Edited DataA";
                 currentData.DataB = "Edited DataB";
 
                 //適応
-                await editHandle.Commit(ct);
+                await editHandle.commit(ct);
 
                 //違うデータ
-                var currentData2 = await editHandle.Current(ct);
+                var currentData2 = await editHandle.current(ct);
 
                 currentData2.DataA = "Edited DataA";
                 currentData2.DataB = "Edited DataB";
@@ -81,12 +81,12 @@ namespace WPFUtil
                 throw new Exception("An error occurred");
 
 
-                await editHandle.Commit(ct);
+                await editHandle.commit(ct);
 
             }
             catch (Exception)
             {
-                editHandle.Restore();
+                editHandle.restore();
             }
         }
 
@@ -97,50 +97,22 @@ namespace WPFUtil
             var ct = cts.Token;
 
             var resource = new TESTClass { DataA = "Original Data" };
-            using ReadHandle<TESTClass> readHandle = await AssetReader.Open(resource, ct);
+            using ReadHandle<TESTClass> readHandle = await AssetReader.open(resource, ct);
 
             try
             {
                 //現在状態を取得
-                var currentData = await readHandle.Current(ct);
+                var currentData = await readHandle.current(ct);
 
                 currentData.DataA = "Edited DataA";
                 currentData.DataB = "Edited DataB";
 
-                await readHandle.Commit(ct);//できない
+                //await readHandle.commit(ct);//できない
             }
             catch (Exception)
             {
             }
         }
-
-
-        public interface IDataMember
-        {
-            Task SyncFields(CancellationToken ct);
-
-            Task CommitFields(CancellationToken ct);
-
-            void Restore();
-        }
-
-
-        public class AssetEditor
-        {
-            public static Task<EditHandle<T>> Open<T>(T resource, CancellationToken ct) where T : IDataMember
-            {
-                return Task.FromResult(new EditHandle<T>(resource));
-            }
-        }
-
-        public class AssetReader
-        {
-            public static Task<ReadHandle<T>> Open<T>(T resource, CancellationToken ct) where T : IDataMember
-            {
-                return Task.FromResult(new ReadHandle<T>(resource));
-            }
-        }
-
 
         public class TESTClass : IDataMember
         {
@@ -149,6 +121,21 @@ namespace WPFUtil
             public string DataA { get; internal set; }
 
             public string DataB { get; internal set; }
+
+            public Task commitFields(CancellationToken ct)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void restore()
+            {
+                throw new NotImplementedException();
+            }
+
+            public Task syncFields(CancellationToken ct)
+            {
+                throw new NotImplementedException();
+            }
         }
 
     }

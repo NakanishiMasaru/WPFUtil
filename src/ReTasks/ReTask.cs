@@ -5,15 +5,15 @@ namespace WPFUtil.src.ReTasks
 
     public static class ReTaskExtension
     {
-        private static SynchronizationContext? _mainThreadContext;
+        private static SynchronizationContext? _MainThreadContext;
 
-        public static void Check(this CancellationToken ct)
+        public static void check(this CancellationToken ct)
         {
-            CheckIsMainThread();
+            checkIsMainThread();
             ct.ThrowIfCancellationRequested();
         }
 
-        public static void CheckIsMainThread()
+        public static void checkIsMainThread()
         {
             if (Environment.CurrentManagedThreadId != 1)
             {
@@ -21,28 +21,28 @@ namespace WPFUtil.src.ReTasks
             }
         }
 
-        public static void SetMainThreadContext()
+        public static void setMainThreadContext()
         {
-            CheckIsMainThread();
+            checkIsMainThread();
 
             var current = SynchronizationContext.Current;
 
-            _mainThreadContext = current ?? throw new InvalidOperationException();
+            _MainThreadContext = current ?? throw new InvalidOperationException();
         }
 
         // メインスレッドでアクションを実行
-        public static void Post(Action action)
+        public static void post(Action action)
         {
-            if (_mainThreadContext == null)
+            if (_MainThreadContext == null)
                 throw new InvalidOperationException();
 
-            _mainThreadContext.Post(_ => action(), null);
+            _MainThreadContext.Post(_ => action(), null);
         }
 
-        public static Task<TResult> RunAsync<TResult>(Func<Task<TResult>> func)
+        public static Task<TResult> runAsync<TResult>(Func<Task<TResult>> func)
         {
             var tcs = new TaskCompletionSource<TResult>();
-            Post(async () =>
+            post(async () =>
             {
                 try
                 {
@@ -58,10 +58,10 @@ namespace WPFUtil.src.ReTasks
             return tcs.Task;
         }
 
-        public static Task RunAsync(Func<Task> func)
+        public static Task runAsync(Func<Task> func)
         {
             var tcs = new TaskCompletionSource<object?>();
-            Post(async () =>
+            post(async () =>
             {
                 try
                 {
@@ -77,17 +77,17 @@ namespace WPFUtil.src.ReTasks
             return tcs.Task;
         }
 
-        public static async Task Main(this ConfiguredTaskAwaitable conf)
+        public static async Task main(this ConfiguredTaskAwaitable conf)
         {
-            await RunAsync(async () =>
+            await runAsync(async () =>
             {
                 await conf;
             }).ConfigureAwait(false);
         }
 
-        public static async Task<T> Main<T>(this ConfiguredTaskAwaitable<T> conf)
+        public static async Task<T> main<T>(this ConfiguredTaskAwaitable<T> conf)
         {
-            return await RunAsync(async () =>
+            return await runAsync(async () =>
             {
                 return await conf;
             }).ConfigureAwait(false);
@@ -95,14 +95,14 @@ namespace WPFUtil.src.ReTasks
 
         public static async Task main(this Task task)
         {
-            await RunAsync(async () =>
+            await runAsync(async () =>
             {
                 await task.ConfigureAwait(false);
             }).ConfigureAwait(false);
         }
-        public static async Task<T> Main<T>(this Task<T> task)
+        public static async Task<T> main<T>(this Task<T> task)
         {
-            return await RunAsync(async () =>
+            return await runAsync(async () =>
             {
                 return await task.ConfigureAwait(false);
             }).ConfigureAwait(false);
