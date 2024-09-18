@@ -1,0 +1,51 @@
+*.exe filter=lfs diff=lfs merge=lfs -text
+# 画像ファイル
+*.png filter=lfs diff=lfs merge=lfs -text
+*.jpg filter=lfs diff=lfs merge=lfs -text
+*.jpeg filter=lfs diff=lfs merge=lfs -text
+*.gif filter=lfs diff=lfs merge=lfs -text
+*.tga filter=lfs diff=lfs merge=lfs -text
+*.psd filter=lfs diff=lfs merge=lfs -text
+
+# モデルファイル
+*.fbx filter=lfs diff=lfs merge=lfs -text
+*.obj filter=lfs diff=lfs merge=lfs -text
+*.blend filter=lfs diff=lfs merge=lfs -text
+*.dae filter=lfs diff=lfs merge=lfs -text
+
+# 音声ファイル
+*.wav filter=lfs diff=lfs merge=lfs -text
+*.mp3 filter=lfs diff=lfs merge=lfs -text
+*.ogg filter=lfs diff=lfs merge=lfs -text
+*.flac filter=lfs diff=lfs merge=lfs -text
+
+# 動画ファイル
+*.mp4 filter=lfs diff=lfs merge=lfs -text
+*.mov filter=lfs diff=lfs merge=lfs -text
+*.avi filter=lfs diff=lfs merge=lfs -text
+
+# テクスチャ、マテリアルファイル
+*.dds filter=lfs diff=lfs merge=lfs -text
+*.sbsar filter=lfs diff=lfs merge=lfs -text
+
+# Unityのシーン、プロジェクトファイル
+*.unity -text
+*.prefab -text
+*.asset -text
+*.mat -text
+*.meta merge=union
+
+# Unreal Engineのファイル
+*.uasset filter=lfs diff=lfs merge=lfs -text
+*.umap filter=lfs diff=lfs merge=lfs -text
+
+# シェーダーファイル
+*.shader -text
+
+# スクリプトファイル（通常のテキストファイルとして管理）
+*.cs text eol=lf
+*.cpp text eol=lf
+*.h text eol=lf
+*.py text eol=lf
+*.js text eol=lf
+*.ts text eol=lf
